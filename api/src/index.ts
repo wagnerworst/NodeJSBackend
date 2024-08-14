@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+
 app.use(express.static("public"))
 const port = 3030;
 
@@ -30,6 +33,22 @@ app.get('/clientes', (req: Request, res: Response):void => {
   const html: string = '<link href="css/style.css" rel="stylesheet"><h1>Clientes</h1>';
 
   res.send(html);  
+})
+
+
+app.get('/funcionarios/:name', (req: Request, res: Response):void => {
+
+  const funcionario = {
+    nome: req.params.name,
+    salario: "4321.50"
+  };
+  //res.contentType("text/html") MUDA O TIPO DA RESPOSTA DO MÉTODO "FORÇA"
+  res.json(funcionario);  
+})
+
+
+app.post("/departamentos", (req: Request, res: Response): void => {
+  res.json(req.body);
 })
 
 app.listen(port, () => {
