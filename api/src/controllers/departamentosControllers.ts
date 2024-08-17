@@ -5,7 +5,7 @@ export const getDepartamentos = async(req: Request, res: Response) => {
   
   const [rows] = await conexao.query('SELECT * FROM DEPARTAMENTOS');
   res.json(rows);
-}
+};
 
 export const postDepartamentos = async(req: Request, res: Response) => {
   const {nome, sigla} = req.body;
@@ -13,7 +13,7 @@ export const postDepartamentos = async(req: Request, res: Response) => {
   {
     res.status(400).json({
       message: "Parâmetros inválidos"
-    })
+    });
   }
 
   try
@@ -31,6 +31,34 @@ export const postDepartamentos = async(req: Request, res: Response) => {
   {
     res.status(500).json({
       message: "Erro na criação"
-    })
+    });
   }
-}
+};
+
+export const deleteDepartamentos = async(req: Request , res: Response) => {
+  const {id} = req.body;
+  if(id === undefined || id === 0 || typeof(id)!='number')
+  {
+    res.status(400).json({
+      message: "Id invalido, informe um dado NUMERICO maior que ZERO."
+    });
+  }
+  
+  try
+  {
+    const [result] = await conexao.execute(
+      'DELETE FROM DEPARTAMENTOS WHERE ID_DEPARTAMENTO = ?',
+      [id]
+    );
+
+    res.status(201).json({
+      message: "Departamento apagado."
+  } )
+  }
+  catch (e)
+  {
+    res.status(500).json({
+      message: "Erro na deleção"
+    });
+  }
+};
