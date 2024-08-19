@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import conexao from '../Services/connection';
+import { ResultSetHeader } from 'mysql2';
 
 export const getDepartamentos = async(req: Request, res: Response) => {
   
@@ -36,29 +37,47 @@ export const postDepartamentos = async(req: Request, res: Response) => {
 };
 
 export const deleteDepartamentos = async(req: Request , res: Response) => {
-  const {id} = req.body;
-  if(id === undefined || id === 0 || typeof(id)!='number')
-  {
-    res.status(400).json({
-      message: "Id invalido, informe um dado NUMERICO maior que ZERO."
-    });
-  }
-  
+  const {id} = req.body;  
   try
   {
-    const [result] = await conexao.execute(
+    const [result] = await conexao.execute<ResultSetHeader>(
       'DELETE FROM DEPARTAMENTOS WHERE ID_DEPARTAMENTO = ?',
       [id]
     );
-
-    res.status(201).json({
-      message: "Departamento apagado."
-  } )
+    
+    if(result.affectedRows === 0)
+    {
+      res.json({
+        message: "Departamento excluido",
+        id
+      })
+      return;
+    }
+    else
+    {
+      res.status(201).json({
+        message: "Departamento apagado."
+      })
+      return;
+    }
   }
+
   catch (e)
   {
-    res.status(500).json({
-      message: "Erro na deleção"
+    let message:string = '';
+    switch(e.code)
+    {
+      case('ER_ROW_IS_REFERENCED_2'):
+      {
+        message = "Id invalido, informe um dado NUMERICO maior que ZERO.";
+      }
+      break;
+      default:
+      message= `My sql error: ${e}`;
+    }
+    res.status(400).json({
+      resultDelete: message
     });
+    return;
   }
 };
