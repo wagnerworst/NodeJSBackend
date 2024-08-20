@@ -10,13 +10,6 @@ export const getDepartamentos = async(req: Request, res: Response) => {
 
 export const postDepartamentos = async(req: Request, res: Response) => {
   const {nome, sigla} = req.body;
-  if(nome === undefined || sigla === undefined)
-  {
-    res.status(400).json({
-      message: "Parâmetros inválidos"
-    });
-  }
-
   try
   {
     const [result] = await conexao.execute(
