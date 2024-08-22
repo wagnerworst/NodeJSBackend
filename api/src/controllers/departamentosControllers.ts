@@ -74,3 +74,26 @@ export const deleteDepartamentos = async(req: Request , res: Response) => {
     return;
   }
 };
+
+export const putDepartamentos = async(req: Request, res: Response) => {
+  const {nome, sigla} = req.body;
+  const {id} = req.params;
+  try
+  {
+    const [result] = await conexao.execute(
+      'UPDATE DEPARTAMENTOS SET sigla=?, nome=? WHERE ID_DEPARTAMENTO=?',
+      [sigla, nome, id]
+    );
+
+    res.status(201).json({
+      message: "Departamento atualizado"
+    })
+  }
+  catch (e)
+  {
+    res.status(500).json({
+      message: "Erro na atualização",
+      e
+    });
+  }
+};

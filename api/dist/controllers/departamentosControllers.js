@@ -21,11 +21,6 @@ const getDepartamentos = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDepartamentos = getDepartamentos;
 const postDepartamentos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nome, sigla } = req.body;
-    if (nome === undefined || sigla === undefined) {
-        res.status(400).json({
-            message: "Parâmetros inválidos"
-        });
-    }
     try {
         const [result] = yield connection_1.default.execute('INSERT INTO DEPARTAMENTOS (sigla, nome) VALUES (?, ?)', [sigla, nome]);
         res.status(201).json({
