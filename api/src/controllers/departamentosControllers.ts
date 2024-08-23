@@ -1,6 +1,28 @@
 import express, { Request, Response } from 'express';
 import conexao from '../Services/connection';
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
+
+export const getDepartamento = async(req: Request, res: Response) => {
+  const {id} = req.params
+  console.log(id);
+  try
+  {
+    const [rows] = await conexao.execute<RowDataPacket[]>('SELECT * FROM DEPARTAMENTOS WHERE ID_DEPARTAMENTO = ?',
+      [id]
+    );
+    res.json(rows);
+  }
+  catch(e)
+  {
+    {
+      res.status(500).json({
+        message: "Erro na consulta",
+        e
+      });
+    }
+  }
+
+};
 
 export const getDepartamentos = async(req: Request, res: Response) => {
   
